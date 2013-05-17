@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.ContrattoEntity">
+
+  <!-- CONTRATTO INSERT -->
+ 
+  <insert id="insertContratto" parameterType="org.activiti.engine.impl.persistence.entity.ContrattoEntity">
+    insert into ${prefix}DOCS_CONTRATTO (ID_, REV_, DATA_FIRMA_, NUM_PROTOCOLLO_INGRESSO_, NUM_PROTOCOLLO_USCITA_, DATA_INIZIO_PRESTAZIONE_,DATA_FINE_CONTRATTO_,CIG_,CUP_,IMPORTO_,IMPONIBILE_,PERCENTUALE_IVA_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{dataFirma ,jdbcType=TIMESTAMP},
+      #{numProtocolloIngresso ,jdbcType=INTEGER},
+      #{numProtocolloUscita ,jdbcType=INTEGER},
+      #{dataInizioPrestazione ,jdbcType=TIMESTAMP},
+      #{dataFineContratto ,jdbcType=TIMESTAMP},
+      #{cig ,jdbcType=VARCHAR},
+      #{cup ,jdbcType=VARCHAR},
+      #{importo ,jdbcType=DOUBLE},
+      #{imponibile ,jdbcType=DOUBLE},
+      #{percentualeIva ,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <!-- CONTRATTO UPDATE -->
+
+  <update id="updateContratto" parameterType="org.activiti.engine.impl.persistence.entity.ContrattoEntity">
+    update ${prefix}DOCS_CONTRATTO set
+      REV_ = #{revisionNext ,jdbcType=INTEGER},
+      DATA_FIRMA_ = #{dataFirma ,jdbcType=TIMESTAMP},
+      NUM_PROTOCOLLO_INGRESSO_ = #{numProtocolloIngresso ,jdbcType=INTEGER},
+      NUM_PROTOCOLLO_USCITA_ = #{numProtocolloUscita ,jdbcType=INTEGER},
+      DATA_INIZIO_PRESTAZIONE_ = #{dataInizioPrestazione ,jdbcType=TIMESTAMP},
+      DATA_FINE_CONTRATTO_ = #{dataFineContratto ,jdbcType=TIMESTAMP},
+      CIG_ = #{cig ,jdbcType=VARCHAR},
+      CUP_ = #{cup ,jdbcType=VARCHAR},
+      IMPORTO_ = #{importo ,jdbcType=DOUBLE},
+      IMPONIBILE_ = #{imponibile ,jdbcType=DOUBLE},
+      PERCENTUALE_IVA_ = #{percentualeIva ,jdbcType=INTEGER} 
+    where ID_ = #{id}
+      and REV_ = #{revision}
+  </update>
+  
+  <!-- CONTRATTO DELETE -->
+
+  <delete id="deleteContratto" parameterType="org.activiti.engine.impl.persistence.entity.ContrattoEntity">
+    delete from ${prefix}DOCS_CONTRATTO where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+
+  <!-- CONTRATTO RESULTMAP -->
+
+  <resultMap id="contrattoResultMap" type="org.activiti.engine.impl.persistence.entity.ContrattoEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="dataFirma" column="DATA_FIRMA_" jdbcType="TIMESTAMP" />
+    <result property="numProtocolloIngresso" column="NUM_PROTOCOLLO_INGRESSO_" jdbcType="INTEGER" />
+    <result property="numProtocolloUscita" column="NUM_PROTOCOLLO_USCITA_" jdbcType="INTEGER" />
+    <result property="dataInizioPrestazione" column="DATA_INIZIO_PRESTAZIONE_" jdbcType="TIMESTAMP" />
+    <result property="dataFineContratto" column="DATA_FINE_CONTRATTO_" jdbcType="TIMESTAMP" />
+    <result property="cig" column="CIG_" jdbcType="VARCHAR" />
+    <result property="cup" column="CUP_" jdbcType="VARCHAR" />
+    <result property="importo" column="IMPORTO_" jdbcType="DOUBLE" />
+    <result property="imponibile" column="IMPONIBILE_" jdbcType="DOUBLE" />
+    <result property="percentualeIva" column="PERCENTUALE_IVA_" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <!-- CONTRATTO SELECT -->
+
+  <select id="selectContrattoById" parameterType="string" resultMap="contrattoResultMap">
+    select * from ${prefix}DOCS_CONTRATTO where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+    
+  <select id="selectContrattoByQueryCriteria" parameterType="org.activiti.engine.impl.ContrattoQueryImpl" resultMap="contrattoResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween}
+    <include refid="selectContrattoByQueryCriteriaSql" />
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+   <select id="selectContrattoCountByQueryCriteria" parameterType="org.activiti.engine.impl.ContrattoQueryImpl" resultType="long">
+    select count(RES.ID_)
+    <include refid="selectContrattoByQueryCriteriaSql" />
+  </select>
+  
+  <sql id="selectContrattoByQueryCriteriaSql">
+    from ${prefix}DOCS_CONTRATTO RES 
+    
+    <where>
+      <if test="id != null">
+        RES.ID_ = #{id}
+      </if>      
+    </where>
+  </sql>
+  
+</mapper>
